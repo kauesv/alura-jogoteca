@@ -1,0 +1,12 @@
+Atividades:
+- Listar Jogos
+- Cadastrar novos Jogos
+- Fazer login
+- Restringir acesso
+
+Atualização do pip na venv:
+    $ py -m pip install --upgrade pip
+
+Instalação do Flask:
+    $ pip install flask             (A última versão)
+    $ pip install flask==2.0.2      (Versão específica)
