@@ -1,0 +1,13 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<div class="container">
+    <h1>Faça seu login</h1>
+    <!-- url_for esta buscando a função chamada autenticar ao inves de usar /autenticar -->
+    <form method="POST" action="{{ url_for('autenticar') }}">
+        <input type="hidden" name="proxima" value="{{ proxima }}">
+        <p><label>Nome de usuário:</label> <input class="form-control" type="text" name="usuario" required></p>
+        <p><label>Senha:</label> <input class="form-control" type="password" name="senha" required></p>
+        <p><button class="btn btn-primary" type="submit">Entrar</button></p>
+    </form>
+</div>
+{% endblock %}
