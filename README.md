@@ -29,6 +29,7 @@ Nesse repositório onde compartilho o resultado de cursos e aulas que participei
    - ORM e SQLAlchemy
    - Organização de códigos
    - Criação de CRUD
+   - Subir arquivos
 
 ### Sobre o projeto
 

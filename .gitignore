@@ -4,3 +4,4 @@ venv/
 __pycache__/
 
 *.jpg
+!capa_padrao.jpg
