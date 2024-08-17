@@ -27,6 +27,8 @@ Nesse repositório onde compartilho o resultado de cursos e aulas que participei
    - Em andamento ...
    - Utilização do banco MySQL
    - ORM e SQLAlchemy
+   - Organização de códigos
+   - Criação de CRUD
 
 ### Sobre o projeto
 
