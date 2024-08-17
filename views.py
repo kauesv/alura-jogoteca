@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect, session, flash, url_for
 from models import Jogos, Usuarios
 from jogoteca import app, db
+import os
 
 
 # Primeira rota
@@ -38,6 +39,11 @@ def criar():
         db.session.add(novo_jogo)
         db.session.commit()
 
+        #   Obtem o arquivo e guarda
+        arquivo = request.files['arquivo']
+        upload_path = app.config["UPLOAD_PATH"]
+        arquivo.save(f"{upload_path}/capa_{novo_jogo.id}_{nome}.jpg")
+
         # Redireciona para a pagina com o nome de função "lista"
         return redirect(url_for('lista'))
 
@@ -73,9 +79,22 @@ def deletar(id):
     if ('usuario_logado' not in session) or (session['usuario_logado'] == None):
         return redirect(url_for('login'))
 
+    jogo = Jogos.query.filter_by(id=id).first()
+    jogo_id = jogo.id
+    jogo_nome = jogo.nome
     Jogos.query.filter_by(id=id).delete()
     db.session.commit()
-    flash(f"Jogo do id {id} deletado com sucesso!!")
+
+    upload_path = app.config["UPLOAD_PATH"]
+    arquivo = f"{upload_path}/capa_{jogo_id}_{jogo_nome}.jpg"
+
+    # Verifica se o arquivo existe antes de deletar
+    if os.path.exists(arquivo):
+        os.remove(arquivo)
+    else:
+        flash(f'{arquivo} não existe.')
+
+    flash(f"Tudo do jogo {jogo_nome} foi deletado com sucesso!!")
     return redirect(url_for('lista'))
 
 @app.route("/login", methods=['GET',])
