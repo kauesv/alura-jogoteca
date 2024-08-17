@@ -25,6 +25,8 @@ Nesse repositório onde compartilho o resultado de cursos e aulas que participei
 
 2. Flask: avançando no desenvolvimento web com Python
    - Em andamento ...
+   - Utilização do banco MySQL
+   - ORM e SQLAlchemy
 
 ### Sobre o projeto
 
