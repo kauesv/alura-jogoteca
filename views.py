@@ -41,6 +41,33 @@ def criar():
         # Redireciona para a pagina com o nome de função "lista"
         return redirect(url_for('lista'))
 
+#   Obtem o id do lista.html
+@app.route("/editar/<int:id>")
+def editar(id):
+    if ('usuario_logado' not in session) or (session['usuario_logado'] == None):
+        return redirect(url_for('login', proxima=url_for('novo')))
+
+    jogo = Jogos.query.filter_by(id=id).first()
+    return render_template('editar.html', titulo="Editando jogo", jogo=jogo)
+
+@app.route("/atualizar", methods=['POST',])
+def atualizar():
+    jogo = Jogos.query.filter_by(id=request.form['id']).first()
+
+    if jogo:
+        jogo.nome = request.form['nome']
+        jogo.categoria = request.form['categoria']
+        jogo.plataforma = request.form['plataforma']
+        db.session.add(jogo)
+        db.session.commit()
+
+        # Redireciona para a pagina com o nome de função "lista"
+        return redirect(url_for('lista'))
+    else:
+        flash("Jogo Não existente!")
+        return redirect(url_for('novo'))
+
+
 @app.route("/login", methods=['GET',])
 def login():
     """Renderiza o html de login"""
