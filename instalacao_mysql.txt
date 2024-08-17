@@ -1,0 +1,36 @@
+Passo 1: Baixar o MySQL Installer
+    1º Acesse o site oficial do MySQL: MySQL Downloads.
+    2º Baixe o MySQL Installer para Windows. Escolha a versão "MySQL Installer for Windows" (pequeno ou completo).
+
+Passo 2: Instalar o MySQL
+    1º Execute o arquivo .msi que você baixou.
+    2º Escolha a opção "Custom" para personalizar os componentes que deseja instalar.
+    3º Selecione os seguintes componentes:
+        - MySQL Server
+        - MySQL Workbench (opcional, para gerenciamento visual)
+        - MySQL Shell (opcional, para executar comandos no terminal)
+    4º Continue o processo de instalação. No final, será solicitado que você configure o MySQL Server.
+
+Passo 3: Configurar o MySQL Server
+    1º No "Type and Networking", selecione "Standalone MySQL Server".
+    2º Na seção "Authentication Method", você pode optar por "Use Strong Password Encryption" ou "Legacy".
+    3º Configure a senha do usuário root.
+    4º Opcionalmente, crie outros usuários e atribua privilégios.
+    5º No "Windows Service", certifique-se de que o MySQL seja configurado para iniciar como um serviço do Windows (selecionado por padrão).
+
+Passo 4: Iniciar o MySQL
+    1º Após a instalação e configuração, o MySQL será iniciado automaticamente como um serviço do Windows.
+    2º Para verificar se o MySQL está rodando, abra o MySQL Workbench ou MySQL Shell e conecte-se ao servidor local usando localhost e a senha configurada para o usuário root.
+
+Passo 5: Testar a Instalação
+    1º Abra o MySQL Workbench ou MySQL Shell.
+    2º Conecte ao servidor usando as credenciais configuradas.
+    3º Execute um comando simples como SHOW DATABASES; para verificar se o MySQL está funcionando corretamente.
+
+Passo 6: Gerenciar o Serviço MySQL
+    - Você pode gerenciar o serviço MySQL usando o Services no Windows ou via linha de comando:
+
+    $ net start mysql
+    $ net stop mysql
+
+Isso deve permitir que você instale e rode o MySQL localmente no seu sistema Windows.

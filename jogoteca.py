@@ -18,7 +18,7 @@ lista_jogos = [jogo1, jogo2, jogo3]
 
 
 class Usuario:
-    def init (self, nome, nickname, senha):
+    def __init__(self, nome, nickname, senha):
         self.nome = nome
         self.nickname = nickname
         self.senha = senha
