@@ -40,7 +40,7 @@ Este projeto é um sistema de gerenciamento de jogos, que utiliza CRUD para list
 
 ### Meu Ponto de Vista
 
-> "O primeiro curso eu não gostei, achei o curso muito bagunçado e feito de qualquer jeito, sei que a ideia era mostrar algumas funcionalidades, mas poderiam ter criado um projeto de verdade, mostrando boas práticas e simulando um projeto real."
+> "O primeiro curso eu não gostei, achei o curso muito bagunçado e feito de qualquer jeito, sei que a ideia era mostrar algumas funcionalidades, já o segundo curso foi mais completo com algumas funcionalidades bem interessantes, lógicas mais construidas e houve uma organização do código comparado com o primeiro."
 
 ## Contato
 
