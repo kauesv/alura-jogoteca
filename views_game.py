@@ -1,18 +1,13 @@
 from flask import render_template, request, redirect, session, flash, url_for, send_from_directory
-from models import Jogos, Usuarios
 from jogoteca import app, db
-import os
-from helpers import recupera_imagem, deleta_arquivo, FormularioJogo, FormularioLogin
+from models import Jogos
+from helpers import recupera_imagem, deleta_arquivo, FormularioJogo
 import time
+import os
 
-
-# Primeira rota
-@app.route('/', methods=['GET',])
-def index():
-    return "<h1>Olá Mundo!!</h1>"
 
 #Apresenta um render template
-@app.route('/lista', methods=['GET',])
+@app.route('/', methods=['GET',])
 def lista():
     lista_jogos = Jogos.query.order_by(Jogos.id)
     return render_template('lista.html', titulo='Jogos', jogos=lista_jogos)
@@ -57,7 +52,7 @@ def criar():
         #arquivo para ele ser unico
         timestamp = time.time()
 
-        arquivo.save(f"{upload_path}/capa_{novo_jogo.id}_{nome}-{timestamp}.jpg")
+        arquivo.save(f"{upload_path}/capa_{novo_jogo.id}-{timestamp}.jpg")
 
         # Redireciona para a pagina com o nome de função "lista"
         return redirect(url_for('lista'))
@@ -107,7 +102,7 @@ def atualizar():
             #Deleta a imagem anterior
             deleta_arquivo(jogo)
 
-            arquivo.save(f"{upload_path}/capa_{request.form['id']}_{request.form['nome']}-{timestamp}.jpg")
+            arquivo.save(f"{upload_path}/capa_{request.form['id']}-{timestamp}.jpg")
 
             # Redireciona para a pagina com o nome de função "lista"
             return redirect(url_for('lista'))
@@ -115,7 +110,7 @@ def atualizar():
             flash("Jogo Não existente!")
             return redirect(url_for('novo'))
 
-    return redirect(url_for('index'))
+    return redirect(url_for('lista'))
 
 #   Obtem o id do lista.html
 @app.route("/deletar/<int:id>")
@@ -124,58 +119,14 @@ def deletar(id):
         return redirect(url_for('login'))
 
     jogo = Jogos.query.filter_by(id=id).first()
-    jogo_id = jogo.id
     jogo_nome = jogo.nome
+    deleta_arquivo(jogo)
+
     Jogos.query.filter_by(id=id).delete()
     db.session.commit()
 
-    upload_path = app.config["UPLOAD_PATH"]
-    arquivo = f"{upload_path}/capa_{jogo_id}_{jogo_nome}.jpg"
-
-    # Verifica se o arquivo existe antes de deletar
-    if os.path.exists(arquivo):
-        os.remove(arquivo)
-    else:
-        flash(f'{arquivo} não existe.')
-
     flash(f"Tudo do jogo {jogo_nome} foi deletado com sucesso!!")
     return redirect(url_for('lista'))
-
-@app.route("/login", methods=['GET',])
-def login():
-    """Renderiza o html de login"""
-    form = FormularioLogin()
-    proxima = request.args.get('proxima')
-    return render_template("login.html", proxima=proxima, form=form)
-
-
-@app.route("/autenticar", methods=['POST',])
-def autenticar():
-    """"""
-    form = FormularioLogin(request.form)
-    usuario = Usuarios.query.filter_by(nickname=form.nickname.data).first()
-
-    if usuario:
-        if form.senha.data == usuario.senha:
-            #Cook para guardar a sessao do usuario
-            session['usuario_logado'] = usuario.nickname
-
-            #permite uma mensagem rapida
-            flash(f'{usuario.nickname} logado com sucesso!')
-
-            proxima_pagina = request.form['proxima']
-            return redirect(proxima_pagina)
-            #return redirect(f'/{proxima_pagina}')
-    else:
-        #permite uma mensagem rapida
-        flash(f'Usuário não logado')
-        return redirect(url_for('login'))
-
-@app.route('/logout')
-def logout():
-    session['usuario_logado'] = None
-    flash('Logout efetuado com sucesso!')
-    return redirect(url_for('index'))
 
 @app.route('/uploads/<nome_arquivo>')
 def imagem(nome_arquivo):

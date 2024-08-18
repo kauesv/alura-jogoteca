@@ -30,6 +30,9 @@ Nesse repositório onde compartilho o resultado de cursos e aulas que participei
    - Organização de códigos
    - Criação de CRUD
    - Subir arquivos
+   - Criação de formulário com Flask WTF
+   - Segurança CSRF
+
 
 ### Sobre o projeto
 

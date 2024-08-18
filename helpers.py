@@ -19,7 +19,7 @@ class FormularioLogin(FlaskForm):
     entrar = SubmitField('Entrar')
 
 def recupera_imagem(jogo):
-    nome_da_imagem = f"capa_{jogo.id}_{jogo.nome}"
+    nome_da_imagem = f"capa_{jogo.id}"
     result = IMAGEM_PADRAO
 
     for nome_arquivo in os.listdir(app.config["UPLOAD_PATH"]):

@@ -16,7 +16,8 @@ db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
 
 #   Tras todas as rotas
-from views import *
+from views_game import *
+from views_user import *
 
 #   Garante que rode a aplicação
 if __name__ == '__main__':
