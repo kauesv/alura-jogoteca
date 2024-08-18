@@ -2,6 +2,8 @@ from flask import render_template, request, redirect, session, flash, url_for, s
 from models import Jogos, Usuarios
 from jogoteca import app, db
 import os
+from helpers import recupera_imagem, deleta_arquivo
+import time
 
 
 # Primeira rota
@@ -42,7 +44,13 @@ def criar():
         #   Obtem o arquivo e guarda
         arquivo = request.files['arquivo']
         upload_path = app.config["UPLOAD_PATH"]
-        arquivo.save(f"{upload_path}/capa_{novo_jogo.id}_{nome}.jpg")
+
+        #   Resolver o problema de cache do navegador
+        # O professor escolheu a opção de colocar timestamp no nome do
+        #arquivo para ele ser unico
+        timestamp = time.time()
+
+        arquivo.save(f"{upload_path}/capa_{novo_jogo.id}_{nome}-{timestamp}.jpg")
 
         # Redireciona para a pagina com o nome de função "lista"
         return redirect(url_for('lista'))
@@ -54,7 +62,11 @@ def editar(id):
         return redirect(url_for('login', proxima=url_for('novo')))
 
     jogo = Jogos.query.filter_by(id=id).first()
-    return render_template('editar.html', titulo="Editando jogo", jogo=jogo)
+
+    #Obtem imagem
+    capa_jogo = recupera_imagem(jogo)
+
+    return render_template('editar.html', titulo="Editando jogo", jogo=jogo, capa_jogo=capa_jogo)
 
 @app.route("/atualizar", methods=['POST',])
 def atualizar():
@@ -66,6 +78,20 @@ def atualizar():
         jogo.plataforma = request.form['plataforma']
         db.session.add(jogo)
         db.session.commit()
+
+        #   salva alteração do arquivo
+        arquivo = request.files['arquivo']
+        upload_path = app.config["UPLOAD_PATH"]
+
+        #   Resolver o problema de cache do navegador
+        # O professor escolheu a opção de colocar timestamp no nome do
+        #arquivo para ele ser unico
+        timestamp = time.time()
+
+        #Deleta a imagem anterior
+        deleta_arquivo(jogo)
+
+        arquivo.save(f"{upload_path}/capa_{request.form['id']}_{request.form['nome']}-{timestamp}.jpg")
 
         # Redireciona para a pagina com o nome de função "lista"
         return redirect(url_for('lista'))
