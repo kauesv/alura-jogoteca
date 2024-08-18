@@ -1,7 +1,22 @@
 import os
 from jogoteca import app
 from config import IMAGEM_PADRAO
+from flask_wtf import FlaskForm
+from wtforms import StringField, validators, SubmitField, PasswordField
 
+
+class FormularioJogo(FlaskForm):
+    nome = StringField(label='Nome do jogo', validators=[validators.DataRequired(), validators.Length(min=1, max=50)])
+    categoria = StringField(label='Categoria', validators=[validators.DataRequired(), validators.Length(min=1, max=40)])
+    plataforma = StringField(label='Plataforma', validators=[validators.DataRequired(), validators.Length(min=1, max=20)])
+
+    salvar = SubmitField(label='Salvar')
+
+class FormularioLogin(FlaskForm):
+    nickname = StringField(label='Nickname', validators=[validators.DataRequired(), validators.Length(min=1, max=8)])
+    senha = PasswordField(label='Senha', validators=[validators.DataRequired(), validators.Length(min=1, max=100)])
+
+    entrar = SubmitField('Entrar')
 
 def recupera_imagem(jogo):
     nome_da_imagem = f"capa_{jogo.id}_{jogo.nome}"
@@ -18,5 +33,6 @@ def recupera_imagem(jogo):
 def deleta_arquivo(jogo):
     arquivo = recupera_imagem(jogo)
 
-    if arquivo != IMAGEM_PADRAO: 
+    if arquivo != IMAGEM_PADRAO:
+        # concatena o diretorio e o arquivo
         os.remove(os.path.join(app.config["UPLOAD_PATH"], arquivo))

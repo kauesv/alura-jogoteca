@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy     # pip install flask-sqlalchemy
 from flask import Flask
-
+from flask_wtf.csrf import CSRFProtect
 
 #   Inicializa o Flask
 app = Flask(__name__)
@@ -11,6 +11,9 @@ app.config.from_pyfile('config.py')
 
 #   Instancia o banco de dados do sql alchemy
 db = SQLAlchemy(app)
+
+# Segurança dos formulários
+csrf = CSRFProtect(app)
 
 #   Tras todas as rotas
 from views import *

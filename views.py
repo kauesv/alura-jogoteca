@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, session, flash, url_for, s
 from models import Jogos, Usuarios
 from jogoteca import app, db
 import os
-from helpers import recupera_imagem, deleta_arquivo
+from helpers import recupera_imagem, deleta_arquivo, FormularioJogo, FormularioLogin
 import time
 
 
@@ -20,16 +20,23 @@ def lista():
 @app.route("/novo", methods=['GET',])
 def novo():
     if ('usuario_logado' not in session) or (session['usuario_logado'] == None):
-        
         return redirect(url_for('login', proxima=url_for('novo')))
         #return redirect('/login?proxima=novo')
-    return render_template('novo.html', titulo="Novo jogo")
+
+    form = FormularioJogo()
+    return render_template('novo.html', titulo="Novo jogo", form=form)
 
 @app.route("/criar", methods=['POST',])
 def criar():
-    nome = request.form['nome']
-    categoria = request.form['categoria']
-    plataforma = request.form['plataforma']
+    form = FormularioJogo(request.form)
+
+    #Valida se o form esta certo
+    if not form.validate_on_submit():
+        return redirect(url_for('novo'))
+
+    nome = form.nome.data
+    categoria = form.categoria.data
+    plataforma = form.plataforma.data
 
     jogo = Jogos.query.filter_by(nome=nome).first()
 
@@ -63,41 +70,52 @@ def editar(id):
 
     jogo = Jogos.query.filter_by(id=id).first()
 
+    form = FormularioJogo()
+    form.nome.data = jogo.nome
+    form.categoria.data = jogo.categoria
+    form.plataforma.data = jogo.plataforma
+
     #Obtem imagem
     capa_jogo = recupera_imagem(jogo)
 
-    return render_template('editar.html', titulo="Editando jogo", jogo=jogo, capa_jogo=capa_jogo)
+    return render_template('editar.html', titulo="Editando jogo", jogo=jogo, capa_jogo=capa_jogo, form=form)
 
 @app.route("/atualizar", methods=['POST',])
 def atualizar():
-    jogo = Jogos.query.filter_by(id=request.form['id']).first()
+    form = FormularioJogo(request.form)
 
-    if jogo:
-        jogo.nome = request.form['nome']
-        jogo.categoria = request.form['categoria']
-        jogo.plataforma = request.form['plataforma']
-        db.session.add(jogo)
-        db.session.commit()
+    #Valida se o form esta certo
+    if form.validate_on_submit():
+        jogo = Jogos.query.filter_by(id=request.form['id']).first()
 
-        #   salva alteração do arquivo
-        arquivo = request.files['arquivo']
-        upload_path = app.config["UPLOAD_PATH"]
+        if jogo:
+            jogo.nome = form.nome.data
+            jogo.categoria = form.categoria.data
+            jogo.plataforma = form.plataforma.data
+            db.session.add(jogo)
+            db.session.commit()
 
-        #   Resolver o problema de cache do navegador
-        # O professor escolheu a opção de colocar timestamp no nome do
-        #arquivo para ele ser unico
-        timestamp = time.time()
+            #   salva alteração do arquivo
+            arquivo = request.files['arquivo']
+            upload_path = app.config["UPLOAD_PATH"]
 
-        #Deleta a imagem anterior
-        deleta_arquivo(jogo)
+            #   Resolver o problema de cache do navegador
+            # O professor escolheu a opção de colocar timestamp no nome do
+            #arquivo para ele ser unico
+            timestamp = time.time()
 
-        arquivo.save(f"{upload_path}/capa_{request.form['id']}_{request.form['nome']}-{timestamp}.jpg")
+            #Deleta a imagem anterior
+            deleta_arquivo(jogo)
 
-        # Redireciona para a pagina com o nome de função "lista"
-        return redirect(url_for('lista'))
-    else:
-        flash("Jogo Não existente!")
-        return redirect(url_for('novo'))
+            arquivo.save(f"{upload_path}/capa_{request.form['id']}_{request.form['nome']}-{timestamp}.jpg")
+
+            # Redireciona para a pagina com o nome de função "lista"
+            return redirect(url_for('lista'))
+        else:
+            flash("Jogo Não existente!")
+            return redirect(url_for('novo'))
+
+    return redirect(url_for('index'))
 
 #   Obtem o id do lista.html
 @app.route("/deletar/<int:id>")
@@ -126,17 +144,19 @@ def deletar(id):
 @app.route("/login", methods=['GET',])
 def login():
     """Renderiza o html de login"""
+    form = FormularioLogin()
     proxima = request.args.get('proxima')
-    return render_template("login.html", proxima=proxima)
+    return render_template("login.html", proxima=proxima, form=form)
 
 
 @app.route("/autenticar", methods=['POST',])
 def autenticar():
     """"""
-    usuario = Usuarios.query.filter_by(nickname=request.form['usuario']).first()
+    form = FormularioLogin(request.form)
+    usuario = Usuarios.query.filter_by(nickname=form.nickname.data).first()
 
     if usuario:
-        if request.form['senha'] == usuario.senha:
+        if form.senha.data == usuario.senha:
             #Cook para guardar a sessao do usuario
             session['usuario_logado'] = usuario.nickname
 
