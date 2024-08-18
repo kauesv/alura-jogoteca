@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy     # pip install flask-sqlalchemy
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
+from flask_bcrypt import Bcrypt
+
 
 #   Inicializa o Flask
 app = Flask(__name__)
@@ -14,6 +16,9 @@ db = SQLAlchemy(app)
 
 # Segurança dos formulários
 csrf = CSRFProtect(app)
+
+# Proteção com criptografia para as senhas
+bcrypt = Bcrypt(app)
 
 #   Tras todas as rotas
 from views_game import *

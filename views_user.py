@@ -2,6 +2,7 @@ from jogoteca import app
 from flask import render_template, request, redirect, session, flash, url_for
 from models import Usuarios
 from helpers import FormularioLogin
+from flask_bcrypt import check_password_hash
 
 
 @app.route("/login", methods=['GET',])
@@ -19,20 +20,17 @@ def autenticar():
     usuario = Usuarios.query.filter_by(nickname=form.nickname.data).first()
 
     if usuario:
-        if form.senha.data == usuario.senha:
-            #Cook para guardar a sessao do usuario
-            session['usuario_logado'] = usuario.nickname
-
+        senha = check_password_hash(pw_hash=usuario.senha, password=form.senha.data)
+        if senha:
             #permite uma mensagem rapida
             flash(f'{usuario.nickname} logado com sucesso!')
 
             proxima_pagina = request.form['proxima']
             return redirect(proxima_pagina)
-            #return redirect(f'/{proxima_pagina}')
-    else:
-        #permite uma mensagem rapida
-        flash(f'Usuário não logado')
-        return redirect(url_for('login'))
+
+    #permite uma mensagem rapida
+    flash(f'Usuário ou senha incorreta')
+    return redirect(url_for('login'))
 
 
 @app.route('/logout')
