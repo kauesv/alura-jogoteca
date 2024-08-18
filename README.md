@@ -24,7 +24,6 @@ Nesse repositório onde compartilho o resultado de cursos e aulas que participei
    - Autenticação e múltiplos usuários.
 
 2. Flask: avançando no desenvolvimento web com Python
-   - Em andamento ...
    - Utilização do banco MySQL
    - ORM e SQLAlchemy
    - Organização de códigos
@@ -32,6 +31,7 @@ Nesse repositório onde compartilho o resultado de cursos e aulas que participei
    - Subir arquivos
    - Criação de formulário com Flask WTF
    - Segurança CSRF
+   - Criptografia de senhas com Flask Bcrypt
 
 
 ### Sobre o projeto

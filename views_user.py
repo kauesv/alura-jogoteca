@@ -22,6 +22,9 @@ def autenticar():
     if usuario:
         senha = check_password_hash(pw_hash=usuario.senha, password=form.senha.data)
         if senha:
+            #Cook para guardar a sessao do usuario
+            session['usuario_logado'] = usuario.nickname
+
             #permite uma mensagem rapida
             flash(f'{usuario.nickname} logado com sucesso!')
 
